@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="panel">
+  <h2>Offline / SMS Verification Simulation</h2>
+  <p>Enter the batch number from the drug pack to simulate SMS verification.</p>
+  <div class="inline-form">
+    <input id="sms-batch" class="input" placeholder="Batch number"/>
+    <button id="sms-verify-btn" class="btn btn-yellow">Verify</button>
+  </div>
+</section>
+
+<section class="panel" id="sms-result-panel" style="display:none;">
+  <h2>Result</h2>
+  <div id="sms-result-box" class="result-box"></div>
+</section>
+
+{% endblock %}

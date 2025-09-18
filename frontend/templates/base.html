@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MedGuard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    /* Background image with dark overlay */
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("{{ url_for('static', filename='images/medicals.jpg') }}") 
+                  no-repeat center center fixed;
+      background-size: cover;
+      z-index: 0;
+      color: #f5f5f5; /* default text color lighter for contrast */
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.55); /* darker overlay for clarity */
+      backdrop-filter: blur(2px);   /* subtle blur effect */
+      z-index: -1;
+    }
+
+    /* Panels and containers with frosted glass effect */
+    .panel, .container, header, footer {
+      background: rgba(255, 255, 255, 0.08); /* very light transparent white */
+      backdrop-filter: blur(8px);            /* frosted glass look */
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      color: #fff; /* ensure text inside panels is white */
+    }
+
+    header.mg-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.8em;
+      color: #fff;
+    }
+
+    .brand p {
+      margin: 2px 0;
+      color: #ddd;
+    }
+
+    footer.mg-footer {
+      text-align: center;
+      font-size: 0.85em;
+      color: #eee;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header class="mg-header">
+    <div class="logo"></div>
+    <div class="brand">
+      <h1>MedGuard</h1>
+      <p>Scan. Verify. Save Lives.</p>
+      <p id="tagline" class="tagline"></p>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="mg-footer">
+    <small>© MedGuard — Fighting counterfeit medicine, one scan at a time.</small>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
