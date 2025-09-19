@@ -1,18 +1,19 @@
 ---
 # 🛡️ MedGuard – Counterfeit Drug Reporting & Verification System
 
-MedGuard is a web-based platform designed to **detect, report, and manage counterfeit drugs**. It empowers users to scan drug packaging, verify authenticity, and submit reports of suspected counterfeit products. Administrators can review reports, mark them as checked, and monitor trends to protect public health.
+MedGuard is a full‑stack web application designed to **detect, report, and manage counterfeit drugs**.
+It provides a **user interface** for scanning and reporting, and an **admin dashboard** for reviewing, filtering, and verifying reports.
 ---
 
 ## ✨ Features
 
-- **QR Code Scanning** – Verify drug authenticity instantly.
-- **Counterfeit Reporting** – Users can submit reports with drug name, batch number, location, and notes.
+- **QR Code Verification** – Scan and validate drug packaging.
+- **Counterfeit Reporting** – Submit reports with drug name, batch number, location, and notes.
 - **Admin Dashboard** – View all reports, filter by date, and mark reports as checked.
-- **Real-Time Notifications** – Badge counter and blinking alerts for new reports.
-- **Status Tracking** – Reports are flagged as `New` (amber) or `Checked` (green).
-- **Session Management** – Automatic session timeout with warning modal.
-- **Responsive UI** – Clean, modern design with medical-grade color palette.
+- **Real-Time Notifications** – Blinking badge for new reports.
+- **Status Tracking** – Reports flagged as `New` (amber) or `Checked` (green).
+- **Session Management** – Auto timeout with warning modal.
+- **Modern UI** – Clean, medical‑grade color palette (teal, emerald, amber).
 
 ---
 
@@ -20,70 +21,78 @@ MedGuard is a web-based platform designed to **detect, report, and manage counte
 
 - **Backend**: Flask (Python)
 - **Database**: SQLite3
-- **Frontend**: HTML, CSS, JavaScript (vanilla)
-- **Styling**: Custom CSS with medical-themed palette
-- **QR Scanning**: Integrated QR reader panel
+- **Frontend**: HTML, CSS, JavaScript
+- **Styling**: Custom CSS with medical‑friendly palette
+- **QR Utilities**: Python QR code generation & verification
 
 ---
 
 ## 📂 Project Structure
 
+### Root
+
 ```
-medguard/
+MEDGUARD/
 │
-├── backend/
-│   ├── database.py        # SQLite connection helper
-│   ├── report.py          # API routes for reports
-│   └── admin.py           # Admin dashboard routes
+├── backend/               # Flask backend
+├── frontend/              # Frontend templates & static files
+├── .logs/                 # Log files
+├── .venv/ / venv/         # Virtual environment
 │
+├── medguard.db            # SQLite database
+├── run.py                 # Entry point for running the app
+├── requirements.txt       # Python dependencies
+│
+├── create_admin_user.py   # Script to seed an admin user
+├── create_drugs_table.py  # Script to create drugs table
+├── create_reporttable.py  # Script to create reports table
+├── migrate_add_mfg_date.py# Migration script
+├── migrate_reports_table.py
+├── view_admins.py         # Utility to view admin users
+└── README.md              # Documentation
+```
+
+### Backend
+
+```
+backend/
+├── app.py                 # Flask app factory
+├── config.py              # Config settings
+├── database.py            # SQLite connection
+├── models.py              # ORM models
+├── qr_utils.py            # QR code utilities
+├── seed_demo.py           # Demo data seeding
+│
+└── routes/                # Modular route handlers
+    ├── __init__.py
+    ├── admin.py           # Admin dashboard routes
+    ├── register.py        # User registration
+    ├── report.py          # Report endpoints
+    ├── verify.py          # Verification endpoints
+```
+
+### Frontend
+
+```
+frontend/
 ├── static/
-│   ├── style.css          # Global styles (color palette, UI components)
+│   ├── images/            # Assets
+│   ├── styles.css         # Global styles
+│   ├── app.js             # User-side logic
 │   ├── admin.js           # Admin dashboard logic
 │   └── admin_timer.js     # Session timeout handling
 │
 ├── templates/
 │   ├── base.html          # Shared layout
+│   ├── index.html         # User scanning/reporting
+│   ├── verify.html        # Verification page
+│   ├── sms_check.html     # SMS verification
 │   ├── admin.html         # Admin dashboard
-│   └── index.html         # User-facing scanning/reporting
+│   ├── admin_login.html   # Admin login
+│   └── admin_drugs.html   # Manage drugs
 │
-├── medguard.db            # SQLite database
-└── README.md              # Project documentation
+└── app_ui.py              # UI integration with backend
 ```
-
----
-
-## ⚙️ Installation & Setup
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/yourusername/MEDGuard.git
-   cd medguard
-   ```
-
-2. **Create a virtual environment & install dependencies**
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. **Initialize the database**
-
-   ```bash
-   sqlite3 medguard.db < schema.sql
-   ```
-
-4. **Run the Flask app**
-
-   ```bash
-   flask run
-   ```
-
-5. **Access the app**
-   - User interface: `http://localhost:5000/`
-   - Admin dashboard: `http://localhost:5000/admin`
 
 ---
 
@@ -100,6 +109,42 @@ medguard/
 | note         | TEXT      | Additional notes             |
 | reported_on  | TIMESTAMP | Auto-set to current datetime |
 | status       | INTEGER   | `0 = New`, `1 = Checked`     |
+
+---
+
+## ⚙️ Installation & Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/MEDGuard.git
+   cd MEDGuard
+   ```
+
+2. **Create a virtual environment & install dependencies**
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate   # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Initialize the database**
+
+   ```bash
+   sqlite3 medguard.db < create_reporttable.py
+   python create_admin_user.py
+   ```
+
+4. **Run the Flask app**
+
+   ```bash
+   python run.py
+   ```
+
+5. **Access the app**
+   - User interface → `http://localhost:5000/`
+   - Admin dashboard → `http://localhost:5000/admin`
 
 ---
 
@@ -141,7 +186,7 @@ This project is licensed under the MIT License. See `LICENSE` for details.
 
 ## 🧑‍💻 Author
 
-Developed by **Timothy Victor** with support from Myself and Myself  
+Developed by **TIMVictor**  
 Designed to protect communities from counterfeit drugs and safeguard public health.
 
 ---
