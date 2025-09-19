@@ -6,7 +6,7 @@ workers = multiprocessing.cpu_count() * 2 + 1
 # Bind to all interfaces on port 8000
 bind = "0.0.0.0:8000"
 
-# Load the Flask app from run.py
+# Load the Flask app using the factory pattern
 
 
 def post_fork(server, worker):
@@ -18,5 +18,5 @@ def when_ready(server):
 
 
 def init(server):
-    from run import app as application  # Import the app instance from run.py
-    server.app = application            # Use the pre-created app
+    from backend.app import create_app  # Import the factory function
+    server.app = create_app()          # Call the factory to get the app instance
