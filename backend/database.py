@@ -1,6 +1,7 @@
 import sqlite3
 from flask import g
 from backend.config import get_config
+from werkzeug.security import generate_password_hash
 
 # Load configuration
 cfg = get_config()
@@ -43,7 +44,8 @@ def close_db(e=None):
 def init_db():
     """
     Initialize the database tables if they don't exist.
-    Ensures 'drugs' and 'reports' tables are created with the correct schema.
+    Ensures 'drugs', 'reports', and 'admin_users' tables are created with the correct schema.
+    Adds a default admin user if none exist.
     """
     conn = sqlite3.connect(cfg.DB_PATH)
     c = conn.cursor()
@@ -73,6 +75,26 @@ def init_db():
             status INTEGER DEFAULT 0
         )
     """)
+
+    # Create admin_users table
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS admin_users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            is_verified INTEGER DEFAULT 0,
+            role TEXT NOT NULL
+        )
+    """)
+
+    # Add default admin user if table is empty
+    c.execute("SELECT COUNT(*) FROM admin_users")
+    if c.fetchone()[0] == 0:
+        c.execute(
+            "INSERT INTO admin_users (email, password_hash, is_verified, role) VALUES (?, ?, ?, ?)",
+            ("admin@nafdac.gov.ng",
+             generate_password_hash("scrypt:32768:8:1$DoYZQKT3lgjtjzud$fd4dd946a8eaa84c7ea9271df7a633d2d5dc296c06a29088713f0884e65ca1e43316df3bf71de1306feea0e1fd9757aff40e0eb1841f6014b1e5a64f9081e510"), 1, "regulator")
+        )
 
     conn.commit()
     conn.close()
